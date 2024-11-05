@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # Auth Service with 2 instances
+  auth-service2-1:
+    build: ./reviseme-backend/auth2-service
+    ports:
+      - "5002"  # Expose on internal port only
+    volumes:
+      - ./reviseme-backend/auth2-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  auth-service2-2:
+    build: ./reviseme-backend/auth2-service
+    ports:
+      - "5003"  # Expose on internal port only
+    volumes:
+      - ./reviseme-backend/auth2-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # Flashcard Service with 2 instances
+  flashcard-service-1:
+    build: ./reviseme-backend/flashcard-service
+    ports:
+      - "5001"
+    volumes:
+      - ./reviseme-backend/flashcard-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  flashcard-service-2:
+    build: ./reviseme-backend/flashcard-service
+    ports:
+      - "5004"
+    volumes:
+      - ./reviseme-backend/flashcard-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # Flashcard AI Service with 2 instances
+  flashcard-ai-service-1:
+    build: ./reviseme-backend/flashcard-ai-service
+    ports:
+      - "5010"
+    volumes:
+      - ./reviseme-backend/flashcard-ai-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  flashcard-ai-service-2:
+    build: ./reviseme-backend/flashcard-ai-service
+    ports:
+      - "5011"
+    volumes:
+      - ./reviseme-backend/flashcard-ai-service:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/testDB
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # MongoDB
+  mongo:
+    image: mongo:5.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./reviseme-frontend
+    volumes:
+      - ./reviseme-frontend/src:/app/src
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+
+  # NGINX Load Balancer
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"  # Expose port 80 for load balancing
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Mount the NGINX configuration
+    depends_on:
+      - auth-service2-1
+      - auth-service2-2
+      - flashcard-service-1
+      - flashcard-service-2
+      - flashcard-ai-service-1
+      - flashcard-ai-service-2
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
