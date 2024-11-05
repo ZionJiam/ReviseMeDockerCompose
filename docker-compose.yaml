@@ -28,7 +28,7 @@ services:
 
   # Flashcard Service with 2 instances
   flashcard-service-1:
-    image: dockerzionjiam/reviseme-flashcard-1:latest
+    image: dockerzionjiam/flashcardservice-1:latest
     ports:
       - "5001"
     environment:
@@ -40,7 +40,7 @@ services:
       - app-network
 
   flashcard-service-2:
-    image: dockerzionjiam/reviseme-flashcard-2:latest
+    image: dockerzionjiam/flashcardservice-2:latest
     ports:
       - "5004"
     environment:
