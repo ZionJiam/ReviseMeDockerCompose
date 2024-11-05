@@ -3,11 +3,9 @@ version: '3.8'
 services:
   # Auth Service with 2 instances
   auth-service2-1:
-    build: ./reviseme-backend/auth2-service
+    image: dockerzionjam/reviseme-auth2-service:latest
     ports:
       - "5002"  # Expose on internal port only
-    volumes:
-      - ./reviseme-backend/auth2-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -17,11 +15,9 @@ services:
       - app-network
 
   auth-service2-2:
-    build: ./reviseme-backend/auth2-service
+    image: dockerzionjam/reviseme-auth2-service:latest
     ports:
       - "5003"  # Expose on internal port only
-    volumes:
-      - ./reviseme-backend/auth2-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -32,11 +28,9 @@ services:
 
   # Flashcard Service with 2 instances
   flashcard-service-1:
-    build: ./reviseme-backend/flashcard-service
+    image: dockerzionjam/reviseme-flashcard-service:latest
     ports:
       - "5001"
-    volumes:
-      - ./reviseme-backend/flashcard-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -46,11 +40,9 @@ services:
       - app-network
 
   flashcard-service-2:
-    build: ./reviseme-backend/flashcard-service
+    image: dockerzionjam/reviseme-flashcard-service:latest
     ports:
       - "5004"
-    volumes:
-      - ./reviseme-backend/flashcard-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -61,11 +53,9 @@ services:
 
   # Flashcard AI Service with 2 instances
   flashcard-ai-service-1:
-    build: ./reviseme-backend/flashcard-ai-service
+    image: dockerzionjam/reviseme-flashcard-ai-service:latest
     ports:
       - "5010"
-    volumes:
-      - ./reviseme-backend/flashcard-ai-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -75,11 +65,9 @@ services:
       - app-network
 
   flashcard-ai-service-2:
-    build: ./reviseme-backend/flashcard-ai-service
+    image: dockerzionjam/reviseme-flashcard-ai-service:latest
     ports:
       - "5011"
-    volumes:
-      - ./reviseme-backend/flashcard-ai-service:/usr/src/app
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/testDB
@@ -100,10 +88,7 @@ services:
 
   # Frontend
   frontend:
-    build:
-      context: ./reviseme-frontend
-    volumes:
-      - ./reviseme-frontend/src:/app/src
+    image: dockerzionjam/reviseme-frontend:latest
     ports:
       - "3000:80"
     networks:
